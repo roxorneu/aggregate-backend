@@ -13,8 +13,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {});
-
 router.post("/", async (req, res) => {
   const newTrip = new tripsModel({
     _id: req.body.tripID,
@@ -33,8 +31,47 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", (req, res) => {});
+router.get("/:id", getTrip, async (req, res) => {
+  res.send(res.trip);
+});
 
-router.delete("/:id", (req, res) => {});
+router.patch("/:id", getTrip, async (req, res) => {
+  var newInterestedUser = req.body.interestedUsers;
+  if (newInterestedUser != null) {
+    if (!res.trip.interestedUsers.includes(newInterestedUser))
+      res.trip.interestedUsers =
+        res.trip.interestedUsers.concat(newInterestedUser);
+  }
+  try {
+    await res.trip.save();
+    res.send(res.trip);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.delete("/:id", getTrip, async (req, res) => {
+  try {
+    await res.trip.remove();
+    res.json({ message: "Deleted trip" });
+  } catch (err) {
+    res.json({ message: err.message });
+  }
+});
+
+async function getTrip(req, res, next) {
+  let trip;
+  try {
+    trip = await tripsModel.findById(req.params.id);
+    if (trip == null) {
+      return res.status(404).json({ message: "Trip Not Found" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+
+  res.trip = trip;
+  next();
+}
 
 module.exports = router;
