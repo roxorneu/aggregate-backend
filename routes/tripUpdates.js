@@ -13,21 +13,43 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  const newTrip = new tripsModel({
-    _id: req.body.tripID,
-    userID: req.body.userID,
-    userName: req.body.userName,
-    destination: req.body.destination,
-    coTravellers: req.body.coTravellers,
-    interestedUsers: req.body.interestedUsers,
-  });
+// Post updates the trip if it exists and creates one if it doesn't
 
+router.post("/", async (req, res) => {
+  let trip;
   try {
-    const newTripAdded = await newTrip.save();
-    res.status(201).json(newTripAdded);
+    trip = await tripsModel.findById(req.body.tripID);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
+  }
+  if (trip == null) {
+    const newTrip = new tripsModel({
+      _id: req.body.tripID,
+      coTravellers: 1,
+      userName: req.body.userName,
+      destination: req.body.destination,
+      interestedUsers: req.body.interestedUsers,
+    });
+    try {
+      const newTripAdded = await newTrip.save();
+      res.status(201).json(newTripAdded);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  } else {
+    var newInterestedUser = req.body.interestedUsers;
+    if (newInterestedUser != null) {
+      if (!trip.interestedUsers.includes(newInterestedUser)) {
+        trip.interestedUsers = trip.interestedUsers.concat(newInterestedUser);
+        trip.coTravellers = trip.coTravellers + 1;
+      }
+    }
+    try {
+      await trip.save();
+      res.send(trip);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
   }
 });
 
@@ -38,9 +60,11 @@ router.get("/:id", getTrip, async (req, res) => {
 router.patch("/:id", getTrip, async (req, res) => {
   var newInterestedUser = req.body.interestedUsers;
   if (newInterestedUser != null) {
-    if (!res.trip.interestedUsers.includes(newInterestedUser))
+    if (!res.trip.interestedUsers.includes(newInterestedUser)) {
       res.trip.interestedUsers =
         res.trip.interestedUsers.concat(newInterestedUser);
+      res.trip.coTravellers = res.trip.coTravellers + 1;
+    }
   }
   try {
     await res.trip.save();

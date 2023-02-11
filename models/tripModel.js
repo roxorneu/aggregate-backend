@@ -5,10 +5,6 @@ const tripSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userID: {
-    type: String,
-    required: true,
-  },
   userName: {
     type: String,
     required: true,
@@ -18,8 +14,9 @@ const tripSchema = new mongoose.Schema({
     required: true,
   },
   coTravellers: {
-    type: String,
-    required: true,
+    type: Number,
+    required: false,
+    default: 0,
   },
   interestCreated: {
     type: Date,
@@ -33,4 +30,4 @@ const tripSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("trip", tripSchema);
+module.exports = mongoose.model("userinterestbytrip", tripSchema);
