@@ -15,7 +15,9 @@ db.once("open", () => console.log("Connected to DB"));
 app.use(express.json());
 
 const tripsRouter = require("./routes/tripUpdates");
+const usersRouter = require("./routes/userUpdates");
 
 app.use("/tripUpdates", tripsRouter);
+app.use("/userUpdates", usersRouter);
 
 app.listen(3000, () => console.log("Server started"));

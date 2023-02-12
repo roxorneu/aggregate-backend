@@ -3,6 +3,9 @@ const express = require("express");
 const router = express.Router();
 
 const tripsModel = require("../models/tripModel");
+const {
+  handleInterestNotification,
+} = require("../utils/HandleExpoNotifications");
 
 router.get("/", async (req, res) => {
   try {
@@ -46,11 +49,16 @@ router.post("/", async (req, res) => {
     }
     try {
       await trip.save();
-      res.send(trip);
+      res.status(200).send(trip);
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
   }
+  handleInterestNotification(
+    req.body.userID,
+    req.body.destination,
+    req.body.interestedUserName
+  );
 });
 
 router.get("/:id", getTrip, async (req, res) => {
