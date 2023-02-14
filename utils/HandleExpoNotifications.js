@@ -8,6 +8,14 @@ const userModel = require("../models/userModel");
 
 const capitaliseFirstLetter = require("./FirstLetterUpperCase");
 
+const config = {
+  headers: {
+    Accept: "application/json",
+    "Accept-encoding": "gzip, deflate",
+    "Content-Type": "application/json",
+  },
+};
+
 async function handleInterestNotification(
   userID,
   destination,
@@ -28,15 +36,23 @@ async function handleInterestNotification(
     data: { someData: "goes here" },
   };
 
-  const config = {
-    headers: {
-      Accept: "application/json",
-      "Accept-encoding": "gzip, deflate",
-      "Content-Type": "application/json",
-    },
-  };
-
   await axios.post(expo_url, message, config);
 }
 
-module.exports = { handleInterestNotification };
+async function handleTripCreationNotification(token, destination) {
+  const notificationBody =
+    "Your trip to " + destination + " has been successfully added!";
+
+  const message = {
+    to: token,
+    sound: "default",
+    title: "Successfully Added Trip",
+    body: notificationBody,
+    data: { someData: "goes here" },
+  };
+
+  const retObj = await axios.post(expo_url, message, config);
+  console.log(retObj);
+}
+
+module.exports = { handleInterestNotification, handleTripCreationNotification };

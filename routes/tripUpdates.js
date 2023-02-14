@@ -5,6 +5,7 @@ const router = express.Router();
 const tripsModel = require("../models/tripModel");
 const {
   handleInterestNotification,
+  handleTripCreationNotification,
 } = require("../utils/HandleExpoNotifications");
 
 router.get("/", async (req, res) => {
@@ -58,6 +59,13 @@ router.post("/", async (req, res) => {
     req.body.userID,
     req.body.destination,
     req.body.interestedUserName
+  );
+});
+
+router.post("/tripCreated", async (req, res) => {
+  console.log("Here");
+  console.log(
+    handleTripCreationNotification(req.body.token, req.body.destination)
   );
 });
 
