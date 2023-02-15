@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
       upsert: true,
       new: true,
     });
-    console.log(userCreated);
+    //console.log(userCreated);
     res.status(200).json(userCreated);
   } catch (err) {
     res.send(500).json({ message: err.message });

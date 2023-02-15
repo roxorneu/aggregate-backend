@@ -23,20 +23,22 @@ async function handleInterestNotification(
 ) {
   const user = await userModel.findById(userID);
 
-  const notificationBody =
-    interestedUserName +
-    " is interested in your trip to " +
-    capitaliseFirstLetter(destination);
+  if (user !== null) {
+    const notificationBody =
+      interestedUserName +
+      " is interested in your trip to " +
+      capitaliseFirstLetter(destination);
 
-  const message = {
-    to: user.token,
-    sound: "default",
-    title: "Interest in your trip",
-    body: notificationBody,
-    data: { someData: "goes here" },
-  };
+    const message = {
+      to: user.token,
+      sound: "default",
+      title: "Interest in your trip",
+      body: notificationBody,
+      data: { someData: "goes here" },
+    };
 
-  await axios.post(expo_url, message, config);
+    await axios.post(expo_url, message, config);
+  }
 }
 
 async function handleTripCreationNotification(token, destination) {
@@ -51,8 +53,7 @@ async function handleTripCreationNotification(token, destination) {
     data: { someData: "goes here" },
   };
 
-  const retObj = await axios.post(expo_url, message, config);
-  console.log(retObj);
+  await axios.post(expo_url, message, config);
 }
 
 module.exports = { handleInterestNotification, handleTripCreationNotification };

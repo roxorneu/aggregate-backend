@@ -63,10 +63,7 @@ router.post("/", async (req, res) => {
 });
 
 router.post("/tripCreated", async (req, res) => {
-  console.log("Here");
-  console.log(
-    handleTripCreationNotification(req.body.token, req.body.destination)
-  );
+  handleTripCreationNotification(req.body.token, req.body.destination);
 });
 
 router.get("/:id", getTrip, async (req, res) => {
