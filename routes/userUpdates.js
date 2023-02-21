@@ -5,7 +5,7 @@ const router = express.Router();
 const userModel = require("../models/userModel");
 
 router.get("/", async (req, res) => {
-  console.log("Received Get");
+  //console.log("Received Get");
   try {
     const users = await userModel.find();
     res.json(users);
@@ -19,6 +19,7 @@ router.get("/:id", getUser, async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  //console.log("Received Post");
   if (req.body.userID === "" || req.body.token === "") {
     return res.status(400).json({ message: "Empty user ID or token" });
   }
